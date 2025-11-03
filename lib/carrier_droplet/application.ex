@@ -12,6 +12,8 @@ defmodule CarrierDroplet.Application do
       CarrierDroplet.Repo,
       {DNSCluster, query: Application.get_env(:carrier_droplet, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: CarrierDroplet.PubSub},
+      # Start Oban
+      {Oban, Application.fetch_env!(:carrier_droplet, Oban)},
       # Start a worker by calling: CarrierDroplet.Worker.start_link(arg)
       # {CarrierDroplet.Worker, arg},
       # Start to serve requests, typically the last entry

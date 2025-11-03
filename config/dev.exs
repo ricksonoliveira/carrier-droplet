@@ -17,6 +17,7 @@ config :carrier_droplet, CarrierDroplet.Repo,
 # watchers to your application. For example, we can use it
 # to bundle .js and .css sources.
 config :carrier_droplet, CarrierDropletWeb.Endpoint,
+  url: [host: "localhost", port: 4000],
   # Binding to loopback ipv4 address prevents access from other machines.
   # Change to `ip: {0, 0, 0, 0}` to allow access from other machines.
   http: [ip: {127, 0, 0, 1}, port: String.to_integer(System.get_env("PORT") || "4000")],
@@ -86,3 +87,8 @@ config :phoenix_live_view,
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+# Configure Google OAuth (use environment variables or set directly for dev)
+config :ueberauth, Ueberauth.Strategy.Google.OAuth,
+  client_id: System.get_env("GOOGLE_CLIENT_ID"),
+  client_secret: System.get_env("GOOGLE_CLIENT_SECRET")

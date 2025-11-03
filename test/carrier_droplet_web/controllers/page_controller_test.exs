@@ -3,6 +3,7 @@ defmodule CarrierDropletWeb.PageControllerTest do
 
   test "GET /", %{conn: conn} do
     conn = get(conn, ~p"/")
-    assert html_response(conn, 200) =~ "Peace of mind from prototype to production"
+    assert html_response(conn, 200) =~ "CarrierDroplet"
+    assert html_response(conn, 200) =~ "AI-Powered Email Sorting"
   end
 end

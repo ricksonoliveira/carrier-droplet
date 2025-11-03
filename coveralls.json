@@ -1,0 +1,18 @@
+{
+  "skip_files": [
+    "test/support",
+    "lib/carrier_droplet_web/endpoint.ex",
+    "lib/carrier_droplet_web/gettext.ex",
+		"lib/carrier_droplet_web/components/core_components.ex",
+		"lib/carrier_droplet_web/telemetry.ex",
+    "lib/carrier_droplet/mailer.ex",
+    "lib/carrier_droplet/release.ex",
+    "lib/carrier_droplet/repo.ex"
+  ],
+  "terminal_options": {
+    "file_column_width": 80
+  },
+  "coverage_options": {
+    "minimum_coverage": 75
+  }
+}

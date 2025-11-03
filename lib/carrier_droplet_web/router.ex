@@ -1,5 +1,6 @@
 defmodule CarrierDropletWeb.Router do
   use CarrierDropletWeb, :router
+  use Phoenix.VerifiedRoutes, endpoint: CarrierDropletWeb.Endpoint, router: __MODULE__
 
   pipeline :browser do
     plug :accepts, ["html"]
@@ -8,6 +9,11 @@ defmodule CarrierDropletWeb.Router do
     plug :put_root_layout, html: {CarrierDropletWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug :fetch_current_user
+  end
+
+  pipeline :require_authenticated_user do
+    plug :require_user
   end
 
   pipeline :api do
@@ -18,6 +24,37 @@ defmodule CarrierDropletWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+  end
+
+  # OAuth routes
+  scope "/auth", CarrierDropletWeb do
+    pipe_through :browser
+
+    get "/logout", AuthController, :logout
+    get "/:provider", AuthController, :request
+    get "/:provider/callback", AuthController, :callback
+    post "/:provider/callback", AuthController, :callback
+  end
+
+  # Authenticated routes
+  scope "/", CarrierDropletWeb do
+    pipe_through [:browser, :require_authenticated_user]
+
+    live_session :authenticated,
+      on_mount: [{CarrierDropletWeb.UserAuth, :ensure_authenticated}] do
+      live "/dashboard", DashboardLive
+      live "/categories/new", CategoryLive.New
+      live "/categories/:id/edit", CategoryLive.Edit
+      live "/categories/:id", CategoryLive.Show
+    end
+  end
+
+  # Oban Web UI (authenticated)
+  scope "/admin" do
+    pipe_through [:browser, :require_authenticated_user]
+
+    import Oban.Web.Router
+    oban_dashboard("/oban")
   end
 
   # Other scopes may use custom stacks.
@@ -39,6 +76,29 @@ defmodule CarrierDropletWeb.Router do
 
       live_dashboard "/dashboard", metrics: CarrierDropletWeb.Telemetry
       forward "/mailbox", Plug.Swoosh.MailboxPreview
+    end
+  end
+
+  # Authentication plugs
+  defp fetch_current_user(conn, _opts) do
+    user_id = get_session(conn, :user_id)
+
+    if user_id do
+      user = CarrierDroplet.Accounts.get_user(user_id)
+      assign(conn, :current_user, user)
+    else
+      assign(conn, :current_user, nil)
+    end
+  end
+
+  defp require_user(conn, _opts) do
+    if conn.assigns[:current_user] do
+      conn
+    else
+      conn
+      |> put_flash(:error, "You must be logged in to access this page.")
+      |> redirect(to: ~p"/")
+      |> halt()
     end
   end
 end

@@ -35,3 +35,9 @@ config :phoenix, :plug_init_mode, :runtime
 # Enable helpful, but potentially expensive runtime checks
 config :phoenix_live_view,
   enable_expensive_runtime_checks: true
+
+# Configure Oban for testing - disable plugins to avoid database connection issues
+config :carrier_droplet, Oban,
+  testing: :manual,
+  plugins: false,
+  queues: false
