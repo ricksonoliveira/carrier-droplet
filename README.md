@@ -209,10 +209,10 @@ mix test --exclude integration
 - **Performance Optimizations** - Pagination for large email lists, virtual scrolling, database query optimization, and caching for frequently accessed data.
 - **More AI Features** - Smart reply suggestions, email priority scoring, spam detection, and sentiment analysis.
 - **User Preferences** - Customizable import frequency, email notifications, theme customization (dark mode), and category color coding.
+- **Make the tests coverage 100%** - Ensuring full test suite coverage acrross the app.
 
 ### **Trade-offs Made**
 
-- **Make the tests coverage 100%** - Ensuring full test suite coverage acrross the app.
 - **No Email Composition** - Read-only email management focused on inbox management rather than being a full email client replacement.
 - **Background Unsubscribe** - Unsubscribe happens in background without immediate feedback, though real-time progress updates via PubSub could be added.
 - **No Email Threading** - Emails shown as flat list rather than grouped by conversation due to Gmail API threading complexity.
